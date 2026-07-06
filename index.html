@@ -1,99 +1,314 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Safy AI Platform</title>
-    <style>
-        :root {
-            --primary-color: #00FF7F; /* أخضر ربيعي */
-            --bg-color: #FFFFFF;
-            --text-color: #333333;
-            --sidebar-bg: #F4F7F6;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            height: 100vh;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-        }
-        #auth-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 1000;
-        }
-        .btn-google {
-            padding: 12px 24px; font-size: 16px; cursor: pointer;
-            background-color: #4285F4; color: white; border: none; border-radius: 5px;
-        }
-        #main-app { display: none; width: 100%; height: 100%; }
-        .sidebar {
-            width: 250px; background-color: var(--sidebar-bg);
-            padding: 20px; display: flex; flex-direction: column; gap: 15px;
-            border-left: 1px solid #E0E0E0;
-        }
-        .sidebar-item {
-            padding: 12px; cursor: pointer; border-radius: 8px; font-weight: bold;
-        }
-        .sidebar-item:hover, .sidebar-item.active {
-            background-color: var(--primary-color); color: white;
-        }
-        .content-area { flex: 1; padding: 30px; display: flex; flex-direction: column; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .btn-signout { background: #FF4D4D; color: white; border: none; padding: 8px 16px; cursor: pointer; border-radius: 5px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safy AI</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #ffffff;
+}
+
+/* Layout */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background: #2ecc71; /* spring green */
+    color: white;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    margin-bottom: 30px;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+}
+
+.menu li {
+    padding: 12px;
+    margin: 10px 0;
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.menu li:hover {
+    background: rgba(255,255,255,0.4);
+}
+
+/* Main */
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Top bar */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.topbar button {
+    padding: 8px 12px;
+    border: none;
+    background: #2ecc71;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Chat area */
+.chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.chat h1 {
+    color: #2ecc71;
+}
+
+/* Input */
+.input-box {
+    width: 60%;
+    display: flex;
+    margin-bottom: 40px;
+}
+
+.input-box input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px 0 0 8px;
+}
+
+.input-box button {
+    padding: 12px;
+    border: none;
+    background: #2ecc71;
+    color: white;
+    border-radius: 0 8px 8px 0;
+}
+
+/* Hidden Sections */
+.section {
+    display: none;
+    padding: 20px;
+}
+
+.active {
+    display: block;
+}
+</style>
+
 </head>
 <body>
 
-    <div id="auth-screen">
-        <h2>مرحباً بك في منصة Safy</h2>
-        <button class="btn-google" onclick="login()">تسجيل الدخول عبر Google</button>
+<div class="container">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Safy</h2>
+        <ul class="menu">
+            <li onclick="showSection('chat')">Chat with Safy</li>
+            <li onclick="showSection('photo')">Photo Maker</li>
+            <li onclick="showSection('video')">Video Maker</li>
+            <li onclick="showSection('game')">Game Maker</li>
+        </ul>
     </div>
 
-    <div id="main-app">
-        <div class="sidebar">
-            <h3>منصة Safy</h3>
-            <div class="sidebar-item active" onclick="switchTab('chat')">Chat with Safy</div>
-            <div class="sidebar-item" onclick="switchTab('photo')">Photo Maker</div>
-            <div class="sidebar-item" onclick="switchTab('video')">Video Maker</div>
-            <div class="sidebar-item" onclick="switchTab('game')">Game Maker</div>
-        </div>
-        <div class="content-area">
-            <div class="top-bar">
-                <button class="btn-signout" onclick="logout()">تسجيل الخروج</button>
-                <div>⚙️ الإعدادات</div>
-            </div>
-            <div id="tab-content">
-                <h2>اسأل Safy / Chat with Safy</h2>
-                <p>مرحباً بك! اكتب سؤالك هنا وسيجيبك الذكاء الاصطناعي.</p>
-            </div>
-        </div>
-    </div>
+    <!-- Main -->
+    <div class="main">
 
-    <script>
-        function login() {
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('main-app').style.display = 'flex';
-        }
-        function logout() {
-            document.getElementById('auth-screen').style.display = 'flex';
-            document.getElementById('main-app').style.display = 'none';
-        }
-        function switchTab(tab) {
-            const content = document.getElementById('tab-content');
-            if(tab === 'chat') {
-                content.innerHTML = `<h2>Ask Safy</h2><p>اكتب سؤالك لشات Safy الذكي...</p>`;
-            } else if(tab === 'photo') {
-                content.innerHTML = `<h2>Photo Maker</h2><p>توليد وتعديل الصور بدقة واقعية، انمي، ولوجو...</p>`;
-            } else if(tab === 'video') {
-                content.innerHTML = `<h2>Video Maker</h2><p>توليد فيديوهات حتى 3 ساعات باستخدام Unreal Engine...</p>`;
-            } else if(tab === 'game') {
-                content.innerHTML = `<h2>Game Maker</h2><p>اصنع لعبتك وحملها بصيغة APK...</p>`;
-            }
-        }
-    </script>
+        <!-- Topbar -->
+        <div class="topbar">
+            <div>
+                ⚙️ Settings
+            </div>
+            <button onclick="logout()">Sign Out</button>
+        </div>
+
+        <!-- Chat Section -->
+        <div id="chat" class="chat active">
+            <h1>Ask Safy</h1>
+            <div class="input-box">
+                <input type="text" placeholder="Type your message...">
+                <button>Send</button>
+            </div>
+        </div>
+
+        <!-- Photo Maker -->
+        <div id="photo" class="section">
+            <h2>Photo Maker</h2>
+            <input type="file"><br><br>
+            <textarea placeholder="Describe image..." rows="4" cols="50"></textarea><br><br>
+            <button>Create</button>
+            <p>⏳ Progress: 0%</p>
+        </div>
+
+        <!-- Video Maker -->
+        <div id="video" class="section">
+            <h2>Video Maker</h2>
+            <textarea placeholder="Describe video..." rows="4" cols="50"></textarea><br><br>
+
+            <label>Style:</label>
+            <select>
+                <option>Ultra Realistic</option>
+                <option>Anime</option>
+                <option>Cartoon</option>
+            </select><br><br>
+
+            <label>Duration:</label>
+            <select>
+                <option>30 sec</option>
+                <option>1 min</option>
+                <option>10 min</option>
+            </select><br><br>
+
+            <button>Create</button>
+            <p>⏳ Progress: 0%</p>
+        </div>
+
+        <!-- Game Maker -->
+        <div id="game" class="section">
+            <h2>Game Maker</h2>
+            <textarea placeholder="Describe your game..." rows="4" cols="50"></textarea><br><br>
+
+            <label>Type:</label>
+            <select>
+                <option>2D</option>
+                <option>3D</option>
+            </select><br><br>
+
+            <button>Create Game</button>
+            <p>⏳ Progress: 0%</p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+function showSection(sectionId) {
+    document.querySelectorAll('.chat, .section').forEach(el => {
+        el.classList.remove('active');
+    });
+    document.getElementById(sectionId).classList.add('active');
+}
+
+function logout() {
+    alert("Logged out!");
+    location.reload();
+}
+</script>
+
+// ======================
+// Chat System (Safy Chat)
+// ======================
+
+const chatForm = document.getElementById("chat-form");
+const chatInput = document.getElementById("chat-input");
+const chatBox = document.getElementById("chat-box");
+
+chatForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const message = chatInput.value.trim();
+  if (!message) return;
+
+  // عرض رسالة المستخدم
+  appendMessage("You", message);
+  chatInput.value = "";
+
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message })
+    });
+
+    const data = await response.json();
+
+    // عرض رد Safy
+    appendMessage("Safy", data.reply);
+
+  } catch (error) {
+    console.error("Error:", error);
+    appendMessage("Safy", "حدث خطأ، حاول مرة أخرى.");
+  }
+});
+
+// دالة إضافة الرسائل
+function appendMessage(sender, text) {
+  const div = document.createElement("div");
+  div.classList.add("message");
+
+  div.innerHTML = `<strong>${sender}:</strong> ${text}`;
+  chatBox.appendChild(div);
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+
+// ======================
+// Unreal Worker (Game + Video)
+// ======================
+
+const gameBtn = document.getElementById("game-maker-btn");
+const videoBtn = document.getElementById("video-maker-btn");
+
+// Game Maker
+gameBtn.addEventListener("click", async () => {
+  handleUnrealRequest("game");
+});
+
+// Video Maker
+videoBtn.addEventListener("click", async () => {
+  handleUnrealRequest("video");
+});
+
+async function handleUnrealRequest(type) {
+  try {
+    const prompt = prompt(`اكتب وصف ${type === "game" ? "اللعبة" : "الفيديو"}:`);
+
+    if (!prompt) return;
+
+    const response = await fetch("/api/unreal-worker", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        type: type,   // "game" أو "video"
+        prompt: prompt
+      })
+    });
+
+    const data = await response.json();
+
+    alert("تم الإرسال بنجاح 🚀\nالحالة: " + data.status);
+
+  } catch (error) {
+    console.error("Error:", error);
+    alert("حصل خطأ أثناء التنفيذ ❌");
+  }
+}
 </body>
 </html>
